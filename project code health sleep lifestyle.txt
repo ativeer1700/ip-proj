@@ -1,0 +1,198 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from google.colab import files
+uploaded=files.upload()
+dfsleep_health=pd.read_csv('Sleep_health_and_lifestyle_dataset.csv')
+dfsleep_health
+#choice 1
+def occ_sd ():
+  sleep_dep=6
+#threshold sd at 6
+  sleep_deprived = dfsleep_health[dfsleep_health['Sleep Duration'] < 6]
+  occupation_sleep_deprived = sleep_deprived['Occupation'].value_counts()
+# Plot the pie chart
+  plt.figure(figsize=(8, 8))
+  plt.pie(occupation_sleep_deprived, labels=occupation_sleep_deprived.index,  startangle=140)
+  plt.title('Occupation Groups of Sleep-Deprived Individuals')
+  plt.axis('equal')  # Equal aspect ratio ensures the pie chart is circular.
+  plt.show()
+#choice 2
+def age_gs():
+  #individual with good quality of sleep
+  good_quality_sleep = dfsleep_health[(dfsleep_health['Quality of Sleep'] >= 7) & (dfsleep_health['Quality of Sleep'] <= 10)]
+  #grouping the individuals by thier age
+  age_group_gs = good_quality_sleep['Age'].value_counts()
+  # Create a line chart
+  plt.figure(figsize=(10, 6))
+  plt.plot(age_group_gs.index, age_group_gs.values, marker='o')
+  plt.title('Age Groups with Good Quality Sleep')
+  plt.xlabel('Age')
+  plt.ylabel('Number of Individuals')
+  plt.grid(True)
+  plt.show()
+#choice 3
+def occ_age_maxpal():
+
+# Group the data by age and calculate the mean physical activity level for each age group
+  age_group_activity = dfsleep_health.groupby('Age')['Physical Activity Level'].mean()
+
+# Find the age group with the maximum physical activity level
+  max_activity_age_group = age_group_activity.idxmax()
+
+# Plotting the chart
+  plt.figure(figsize=(10, 6))
+  age_group_activity.plot(kind='bar', color='magenta')
+  plt.title('Average Physical Activity Level by Age Group')
+  plt.xlabel('Age Group')
+  plt.ylabel('Average Physical Activity Level')
+  plt.axvline(x=max_activity_age_group, color='red', linestyle='--', label='Max Activity Age Group')
+  plt.legend()
+  plt.xticks(rotation=45)
+  plt.show()
+#choice 4
+def sleep_BMI():
+  # Group the data by 'BMI Category' and 'Sleep Disorder', and then count the occurrences
+  grouped_data = dfsleep_health.groupby(['BMI Category', 'Sleep Disorder'])['Person ID'].count()
+
+# Plot the data using a stacked bar chart
+  grouped_data.plot(kind='bar', stacked=True,figsize=(10, 6))
+  plt.title('Relationship between Sleep Disorders and BMI Categories')
+  plt.xlabel('Sleep Disorder')
+  plt.ylabel('Number of People')
+  plt.legend(title='BMI Category')
+  #plt.xticks
+  plt.tight_layout()
+
+# Show the plot
+  plt.show()
+#choice 5
+def avg_age():
+  average_age = dfsleep_health['Age'].mean()
+  print("Average Age:", average_age)
+
+# Display age distribution using a histogram
+  plt.hist(dfsleep_health['Age'], bins=20, edgecolor='black')
+  plt.xlabel('Age')
+  plt.ylabel('Frequency')
+  plt.title('Age Distribution')
+  plt.show()
+#choice 6
+def age_highstress_pa():
+  age_grouped = dfsleep_health.groupby('Age').agg({'Stress Level': 'mean','Physical Activity Level': 'mean'}).reset_index()
+  plt.figure(figsize=(10, 6))
+  plt.plot(age_grouped['Age'], age_grouped['Stress Level'], marker='o', label='Stress Level')
+  plt.plot(age_grouped['Age'], age_grouped['Physical Activity Level'], marker='o', label='Physical Activity Level')
+
+  plt.title('Average Stress Level and Physical Activity Level by Age Group')
+  plt.xlabel('Age')
+  plt.ylabel('Average Level')
+  plt.legend()
+  plt.grid(True)
+  plt.xticks(age_grouped['Age'])  # Set x-axis ticks to match age groups
+  plt.show()
+#choice 7
+def sleep_disorder():
+# Remove rows with Sleep Disorder as "None"
+  dfsleep_health_filtered = dfsleep_health[dfsleep_health['Sleep Disorder'] != 'None']
+
+# Count the occurrences of each sleep disorder
+  sleep_disorder_counts = dfsleep_health_filtered['Sleep Disorder'].value_counts()
+
+# Get the most prevalent sleep disorder
+  most_prevalent_sleep_disorder = sleep_disorder_counts.idxmax()
+
+# Plot the chart
+  plt.figure(figsize=(10, 6))
+  plt.bar(sleep_disorder_counts.index, sleep_disorder_counts.values, color='skyblue')
+  plt.xlabel('Sleep Disorder')
+  plt.ylabel('Count')
+  plt.title('Prevalent Sleep Disorder')
+  plt.xticks(rotation=45)
+  plt.tight_layout()
+
+# Display the most prevalent sleep disorder
+  print(f"Most Prevalent Sleep Disorder excluding the none values: {most_prevalent_sleep_disorder}")
+  plt.show()
+#choice 8
+def comparison():
+  plt.figure(figsize=(10, 6))
+# Creating a histogram for Physical Activity Level
+  plt.subplot(131)
+  plt.hist(dfsleep_health["Physical Activity Level"], color='r', bins=10)
+  plt.title("Physical Activity Level")
+
+# Creating a histogram for Daily Steps
+  plt.subplot(133)
+  plt.hist(dfsleep_health["Daily Steps"], color='y', bins=10)
+  plt.title("Daily Steps")
+
+  plt.tight_layout()
+  plt.show()
+#choice 9
+def plot_bmi_vs_activity():
+  grouped = dfsleep_health.groupby(['BMI Category', 'Physical Activity Level']).size().unstack()
+  grouped.plot(kind='bar', stacked=True, figsize=(10, 6))
+  plt.title('Comparison between BMI Category and Physical Activity Level')
+  plt.xlabel('BMI Category')
+  plt.ylabel('Count')
+  plt.legend(title='Physical Activity Level')
+  plt.show()
+a=input("Enter your name")
+print('Hey.',a,'! Here are some questions for you to test your sleep health.')
+while True:
+  print("."*222)
+  print("\t","\t","\t","\t","\t","\t","\t","\t","\t","\t","MENU")
+  print("."*222)
+  print("."*222)
+  print("\t","\t","\t","\t","\t","\t","\t","\t","\t","Warm Greetings from us to you")
+  print("."*222)
+
+
+  print("1. To display the occupation group who are sleep deprived")
+  print("2. To display the age group who are getting good quality (7-10) of sleep")
+  print("3. To display the age group who has the maximum physical activity level") #
+  print("4. To display the relation between sleep disorders and obese people")
+  print("5. To display average age and age distribution of individuals in the dataset?")
+  print("6. To display age groups that tend to have higher stress levels or lower physical activity levels")
+  print("7. To display the sleep disorder which is most prevelant in the dataset")
+  print("8. To display the comparison between physical activity and daily steps")
+  print("9. To display the comparison between BMI category and physical activity")
+  print("10. Exit ")
+
+  ch=int(input("Enter your choice"))
+  if ch==1:
+      print("THANK YOU" , a)
+      occ_sd()
+      #occupation sleep deprived
+  elif ch==2:
+      print("THANK YOU" , a)
+      age_gs()
+      #good sleep
+  elif ch==3:
+      print("THANK YOU" , a)
+      occ_age_maxpal() #problem
+      #occupation maximum physical activity
+  elif ch==4:
+      print("THANK YOU" , a)
+      sleep_BMI()
+  elif ch==5:
+      print("THANK YOU" , a)
+      avg_age()
+  elif ch==6:
+      print("THANK YOU" , a)
+      age_highstress_pa()
+      #high stress ,physical activity
+  elif ch==7:
+      print("THANK YOU" , a)
+      sleep_disorder()
+  elif ch==8:
+      print("THANK YOU" , a)
+      comparison()
+      #physical activity daily steps matplotlib
+  elif ch==9:
+      print("THANK YOU" , a)
+      plot_bmi_vs_activity()
+      #physical activity matplotlib
+  elif ch==10:
+    print("Thank you for being with us and taking the time to review our analysis. We hope that the insights provided have been valuable and informative.")
+    break
